@@ -8,6 +8,16 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { WagmiConfig, createConfig, mainnet } from "wagmi";
+import { createPublicClient, http } from "viem";
+
+const config = createConfig({
+  autoConnect: true,
+  publicClient: createPublicClient({
+    chain: mainnet,
+    transport: http(),
+  }),
+});
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
@@ -23,7 +33,9 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <WagmiConfig config={config}>
+          <Outlet />
+        </WagmiConfig>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
